@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "JonyBalls3/1.0.0": {
+        "runtime": {
+          "JonyBalls3.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "JonyBalls3/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

@@ -1,0 +1,45 @@
+﻿@model IEnumerable<JonyBalls3.Models.SimpleProject>
+
+@{
+    ViewData["Title"] = "Мои проекты";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Создать новый проект</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Название</th>
+            <th>Площадь</th>
+            <th>Бюджет</th>
+            <th>Статус</th>
+            <th>Дата создания</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Area м²</td>
+                <td>@item.Budget.ToString("N0") руб.</td>
+                <td>
+                    <span class="badge bg-@(item.Status == "Завершен" ? "success" : item.Status == "Активный" ? "primary" : "warning")">
+                        @item.Status
+                    </span>
+                </td>
+                <td>@item.CreatedDate.ToString("dd.MM.yyyy")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Подробнее</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Редактировать</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

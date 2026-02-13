@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Калькулятор сметы";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form method="post" asp-action="Calculate">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label class="form-label">Площадь помещения (м²)</label>
+                <input type="number" name="Area" class="form-control" value="50" min="10" max="500" required>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label class="form-label">Тип ремонта</label>
+                <select name="RepairType" class="form-control">
+                    <option value="Косметический">Косметический</option>
+                    <option value="Капитальный">Капитальный</option>
+                    <option value="Дизайнерский">Дизайнерский</option>
+                </select>
+            </div>
+            
+            <div class="form-check mb-3">
+                <input type="checkbox" name="IncludeMaterials" class="form-check-input" id="includeMaterials" checked>
+                <label class="form-check-label" for="includeMaterials">Включать материалы</label>
+            </div>
+            
+            <div class="form-check mb-3">
+                <input type="checkbox" name="IncludeWorks" class="form-check-input" id="includeWorks" checked>
+                <label class="form-check-label" for="includeWorks">Включать работы</label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary mt-3">Рассчитать</button>
+        </div>
+    </div>
+</form>
+
+<div class="mt-5">
+    <h3>Примерные цены за м²:</h3>
+    <ul>
+        <li>Косметический ремонт: 5,000 - 8,000 руб./м²</li>
+        <li>Капитальный ремонт: 10,000 - 15,000 руб./м²</li>
+        <li>Дизайнерский ремонт: 15,000 - 25,000 руб./м²</li>
+    </ul>
+    <p class="text-muted">*Цены являются ориентировочными. Для точного расчета обратитесь к подрядчику.</p>
+</div>

@@ -1,0 +1,55 @@
+﻿@model JonyBalls3.Models.SimpleContractor[]
+
+@{
+    ViewData["Title"] = "Каталог подрядчиков";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form method="get" class="mb-4">
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" name="specialization" class="form-control" placeholder="Специализация" value="@ViewBag.Specialization">
+        </div>
+        <div class="col-md-4">
+            <input type="number" name="maxPrice" class="form-control" placeholder="Макс. цена за час" value="@ViewBag.MaxPrice">
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary">Поиск</button>
+            <a asp-action="Index" class="btn btn-secondary">Сбросить</a>
+        </div>
+    </div>
+</form>
+
+<div class="row">
+    @foreach (var contractor in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">@contractor.Name</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">@contractor.Specialization</h6>
+                    
+                    <div class="mb-2">
+                        <span class="badge bg-success">Рейтинг: @contractor.Rating/5</span>
+                        <span class="badge bg-info">Опыт: @contractor.ExperienceYears лет</span>
+                    </div>
+                    
+                    <p class="card-text">
+                        <strong>Телефон:</strong> @contractor.Phone<br>
+                        <strong>Цена за час:</strong> @contractor.PricePerHour.ToString("N0") руб.
+                    </p>
+                    
+                    <a asp-action="Details" asp-route-id="@contractor.Id" class="btn btn-primary">Подробнее</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (Model.Length == 0)
+{
+    <div class="alert alert-info">
+        Подрядчики по вашему запросу не найдены.
+    </div>
+}

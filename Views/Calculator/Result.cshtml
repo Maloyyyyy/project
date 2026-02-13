@@ -1,0 +1,41 @@
+﻿@model JonyBalls3.Services.CalculatorService.CalculationResult
+
+@{
+    ViewData["Title"] = "Результат расчета";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="alert alert-success">
+    <h4 class="alert-heading">Расчет выполнен успешно!</h4>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5>Итоговая стоимость</h5>
+    </div>
+    <div class="card-body">
+        <h2 class="text-primary">@Model.TotalCost.ToString("N0") руб.</h2>
+        
+        <div class="mt-4">
+            <h5>Детали расчета:</h5>
+            <pre class="bg-light p-3">@Model.Details</pre>
+        </div>
+        
+        <div class="mt-4">
+            <h5>Рекомендации:</h5>
+            <ul>
+                @foreach (var recommendation in Model.Recommendations)
+                {
+                    <li>@recommendation</li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a asp-action="Index" class="btn btn-secondary">Новый расчет</a>
+    <button onclick="window.print()" class="btn btn-info">Распечатать</button>
+    <a asp-controller="Projects" asp-action="Create" class="btn btn-success">Создать проект на основе расчета</a>
+</div>

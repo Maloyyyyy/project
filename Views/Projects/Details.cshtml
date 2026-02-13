@@ -1,0 +1,40 @@
+﻿@model JonyBalls3.Models.SimpleProject
+
+@{
+    ViewData["Title"] = "Детали проекта";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <h4>Проект</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Название</dt>
+        <dd class="col-sm-10">@Model.Name</dd>
+        
+        <dt class="col-sm-2">Описание</dt>
+        <dd class="col-sm-10">@Model.Description</dd>
+        
+        <dt class="col-sm-2">Площадь</dt>
+        <dd class="col-sm-10">@Model.Area м²</dd>
+        
+        <dt class="col-sm-2">Бюджет</dt>
+        <dd class="col-sm-10">@Model.Budget.ToString("N0") руб.</dd>
+        
+        <dt class="col-sm-2">Статус</dt>
+        <dd class="col-sm-10">
+            <span class="badge bg-@(Model.Status == "Завершен" ? "success" : Model.Status == "Активный" ? "primary" : "warning")">
+                @Model.Status
+            </span>
+        </dd>
+        
+        <dt class="col-sm-2">Дата создания</dt>
+        <dd class="col-sm-10">@Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")</dd>
+    </dl>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Редактировать</a>
+    <a asp-action="Index" class="btn btn-secondary">Назад к списку</a>
+</div>
