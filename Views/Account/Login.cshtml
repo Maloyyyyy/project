@@ -1,424 +1,62 @@
-﻿@{
-    ViewData["Title"] = "JonyBalls3 - Вход в систему";
-    Layout = null;
+﻿@model JonyBalls3.Controllers.LoginViewModel
+
+@{
+    ViewData["Title"] = "Вход";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            position: relative;
-        }
-
-        /* Простой фон без анимаций */
-        .background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.1;
-            background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.2) 0%, transparent 50%),
-                              radial-gradient(circle at 80% 80%, rgba(255,255,255,0.2) 0%, transparent 50%);
-        }
-
-        .login-wrapper {
-            width: 100%;
-            max-width: 450px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .login-card {
-            background: rgba(255, 255, 255, 0.98);
-            border-radius: 30px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
-
-        .login-header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
-        }
-
-        .logo-circle {
-            width: 100px;
-            height: 100px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .logo-circle i {
-            font-size: 50px;
-            color: #667eea;
-        }
-
-        .login-header h1 {
-            font-size: 40px;
-            font-weight: 800;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-        }
-
-        .login-header p {
-            font-size: 16px;
-            opacity: 0.9;
-        }
-
-        .login-body {
-            padding: 30px;
-            background: white;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            background: #f0f0f0;
-            padding: 5px;
-            border-radius: 15px;
-        }
-
-        .tab {
-            flex: 1;
-            text-align: center;
-            padding: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            color: #666;
-            cursor: pointer;
-            border-radius: 12px;
-            transition: all 0.2s;
-        }
-
-        .tab.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            box-shadow: 0 5px 15px rgba(102,126,234,0.3);
-        }
-
-        .form-container {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .form-container.active {
-            display: block;
-            opacity: 1;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #333;
-            font-size: 14px;
-        }
-
-        .input-group {
-            position: relative;
-        }
-
-        .input-group i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #999;
-            font-size: 18px;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 15px 15px 15px 50px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 15px;
-            transition: all 0.2s;
-        }
-
-        .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
-            outline: none;
-        }
-
-        .btn-login {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 10px;
-        }
-
-        .btn-login:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102,126,234,0.3);
-        }
-
-        .forgot-password {
-            text-align: right;
-            margin-top: 10px;
-        }
-
-        .forgot-password a {
-            color: #667eea;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .social-login {
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .social-login p {
-            color: #999;
-            margin-bottom: 15px;
-            position: relative;
-        }
-
-        .social-login p:before,
-        .social-login p:after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: 30%;
-            height: 1px;
-            background: #e0e0e0;
-        }
-
-        .social-login p:before {
-            left: 0;
-        }
-
-        .social-login p:after {
-            right: 0;
-        }
-
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-        }
-
-        .social-icon {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: #f5f5f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #666;
-            text-decoration: none;
-            transition: all 0.2s;
-            font-size: 18px;
-        }
-
-        .social-icon:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .alert-danger {
-            background: #fee;
-            color: #c33;
-            padding: 12px 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            border-left: 4px solid #c33;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 20px;
-            background: #f8f9fa;
-            color: #666;
-            font-size: 14px;
-            border-top: 1px solid #eee;
-        }
-    </style>
-</head>
-<body>
-    <div class="background"></div>
-
-    <div class="login-wrapper">
-        <div class="login-card">
-            <!-- Header -->
-            <div class="login-header">
-                <div class="logo-circle">
-                    <i class="fas fa-tools"></i>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <h2 class="text-center fw-bold" style="color: #667eea;">
+                        <i class="fas fa-sign-in-alt me-2"></i>Вход в систему
+                    </h2>
                 </div>
-                <h1>JonyBalls3</h1>
-                <p>Платформа для управления ремонтом</p>
-            </div>
+                <div class="card-body p-4">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-            <!-- Body -->
-            <div class="login-body">
-                @if (ViewBag.Error != null)
-                {
-                    <div class="alert-danger">
-                        <i class="fas fa-exclamation-circle me-2"></i>
-                        @ViewBag.Error
-                    </div>
-                }
-
-                <!-- Tabs -->
-                <div class="tabs">
-                    <div class="tab active" onclick="switchTab('login')">
-                        <i class="fas fa-sign-in-alt me-2"></i>Вход
-                    </div>
-                    <div class="tab" onclick="switchTab('register')">
-                        <i class="fas fa-user-plus me-2"></i>Регистрация
-                    </div>
-                </div>
-
-                <!-- Login Form -->
-                <div class="form-container active" id="loginForm">
-                    <form method="post" action="/Account/Login">
-                        <div class="form-group">
-                            <label>Email</label>
+                    <form asp-action="Login" method="post">
+                        @Html.AntiForgeryToken()
+                        
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
                             <div class="input-group">
-                                <i class="fas fa-envelope"></i>
-                                <input type="email" class="form-control" name="email" placeholder="Введите email" required>
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                <input asp-for="Email" class="form-control" />
                             </div>
+                            <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
-                            <label>Пароль</label>
+
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label"></label>
                             <div class="input-group">
-                                <i class="fas fa-lock"></i>
-                                <input type="password" class="form-control" name="password" placeholder="Введите пароль" required>
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input asp-for="Password" class="form-control" />
                             </div>
+                            <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div>
-                                <input type="checkbox" id="remember" name="rememberMe">
-                                <label for="remember" class="ms-2">Запомнить</label>
-                            </div>
-                            <div class="forgot-password">
-                                <a href="#"><i class="fas fa-question-circle me-1"></i>Забыли пароль?</a>
-                            </div>
+
+                        <div class="mb-3 form-check">
+                            <input asp-for="RememberMe" class="form-check-input" />
+                            <label asp-for="RememberMe" class="form-check-label"></label>
                         </div>
-                        <button type="submit" class="btn-login">
+
+                        <button type="submit" class="btn btn-primary w-100 py-2 mb-3">
                             <i class="fas fa-sign-in-alt me-2"></i>Войти
                         </button>
+
+                        <div class="text-center">
+                            <p class="mb-0">Нет аккаунта? <a asp-action="Register" class="text-decoration-none">Зарегистрироваться</a></p>
+                        </div>
                     </form>
                 </div>
-
-                <!-- Register Form -->
-                <div class="form-container" id="registerForm">
-                    <form method="post" action="/Account/Register">
-                        <div class="form-group">
-                            <label>Имя</label>
-                            <div class="input-group">
-                                <i class="fas fa-user"></i>
-                                <input type="text" class="form-control" name="name" placeholder="Введите имя" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <div class="input-group">
-                                <i class="fas fa-envelope"></i>
-                                <input type="email" class="form-control" name="email" placeholder="Введите email" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Пароль</label>
-                            <div class="input-group">
-                                <i class="fas fa-lock"></i>
-                                <input type="password" class="form-control" name="password" placeholder="Придумайте пароль" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Подтверждение</label>
-                            <div class="input-group">
-                                <i class="fas fa-lock"></i>
-                                <input type="password" class="form-control" name="confirmPassword" placeholder="Повторите пароль" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <input type="checkbox" id="agree" required>
-                            <label for="agree" class="ms-2">Согласен с условиями</label>
-                        </div>
-                        <button type="submit" class="btn-login">
-                            <i class="fas fa-user-plus me-2"></i>Зарегистрироваться
-                        </button>
-                    </form>
-                </div>
-
-                <!-- Social Login -->
-                <div class="social-login">
-                    <p>или войдите через</p>
-                    <div class="social-icons">
-                        <a href="#" class="social-icon"><i class="fab fa-google"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-vk"></i></a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Footer -->
-            <div class="footer">
-                <i class="fas fa-copyright me-1"></i>2026 JonyBalls3. Все права защищены.
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        function switchTab(tab) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.form-container').forEach(f => f.classList.remove('active'));
-            
-            if (tab === 'login') {
-                document.querySelectorAll('.tab')[0].classList.add('active');
-                document.getElementById('loginForm').classList.add('active');
-            } else {
-                document.querySelectorAll('.tab')[1].classList.add('active');
-                document.getElementById('registerForm').classList.add('active');
-            }
-        }
-    </script>
-</body>
-</html>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

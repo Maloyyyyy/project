@@ -1,69 +1,96 @@
-﻿using JonyBalls3.Models;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
+ using JonyBalls3.Data;
+using JonyBalls3.Models;
 
 namespace JonyBalls3.Services
 {
     public class ProjectService
     {
-        private static List<SimpleProject> _projects = new();
-        private static int _nextId = 1;
+        private readonly ApplicationDbContext _context;
         
-        public List<SimpleProject> GetAllProjects()
+        public ProjectService(ApplicationDbContext context)
         {
-            return _projects.OrderByDescending(p => p.CreatedDate).ToList();
+            _context = context;
         }
         
-        public SimpleProject? GetProjectById(int id)
+        public async Task<List<Project>> GetUserProjectsAsync(string userId)
         {
-            return _projects.FirstOrDefault(p => p.Id == id);
+            return await _context.Projects
+                .Include(p => p.Stages)
+                .Include(p => p.Contractor)
+                .Where(p => p.UserId == userId)
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
         }
         
-        public void AddProject(SimpleProject project)
+        public async Task<Project> GetProjectByIdAsync(int id)
         {
-            project.Id = _nextId++;
-            _projects.Add(project);
+            return await _context.Projects
+                .Include(p => p.Stages)
+                .Include(p => p.Contractor)
+                .Include(p => p.Expenses)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
         
-        public void UpdateProject(SimpleProject project)
+        public async Task<Project> CreateProjectAsync(Project project)
         {
-            var existing = GetProjectById(project.Id);
-            if (existing != null)
+            project.CreatedAt = DateTime.Now;
+            _context.Projects.Add(project);
+            await _context.SaveChangesAsync();
+            return project;
+        }
+        
+        public async Task<Project> UpdateProjectAsync(Project project)
+        {
+            project.UpdatedAt = DateTime.Now;
+            _context.Entry(project).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return project;
+        }
+        
+        public async Task<bool> DeleteProjectAsync(int id)
+        {
+            var project = await _context.Projects.FindAsync(id);
+            if (project == null) return false;
+            
+            _context.Projects.Remove(project);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        
+        public async Task<ProjectStage> AddStageAsync(ProjectStage stage)
+        {
+            _context.ProjectStages.Add(stage);
+            await _context.SaveChangesAsync();
+            return stage;
+        }
+        
+        public async Task<ProjectStage> GetStageByIdAsync(int id)
+        {
+            return await _context.ProjectStages
+                .Include(s => s.Project)
+                .FirstOrDefaultAsync(s => s.Id == id);
+        }
+
+        public async Task UpdateStageAsync(ProjectStage stage)
+        {
+            _context.Entry(stage).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateProjectProgressAsync(int projectId)
+        {
+            var project = await _context.Projects
+                .Include(p => p.Stages)
+                .FirstOrDefaultAsync(p => p.Id == projectId);
+
+            if (project != null && project.Stages.Any())
             {
-                existing.Name = project.Name;
-                existing.Description = project.Description;
-                existing.Area = project.Area;
-                existing.Budget = project.Budget;
-                existing.Status = project.Status;
-            }
-        }
-        
-        public void DeleteProject(int id)
-        {
-            _projects.RemoveAll(p => p.Id == id);
-        }
-        
-        public void InitializeSampleData()
-        {
-            if (_projects.Count == 0)
-            {
-                AddProject(new SimpleProject 
-                { 
-                    Name = "Ремонт кухни", 
-                    Description = "Полный ремонт кухни 15м²",
-                    Area = 15,
-                    Budget = 150000,
-                    Status = "Активный"
-                });
+                project.Progress = (int)Math.Round(project.Stages.Average(s => s.Progress));
+                project.Spent = project.Stages.Sum(s => s.Spent);
+                project.UpdatedAt = DateTime.Now;
                 
-                AddProject(new SimpleProject 
-                { 
-                    Name = "Ванная комната", 
-                    Description = "Замена сантехники и плитки",
-                    Area = 8,
-                    Budget = 80000,
-                    Status = "Планирование"
-                });
+                await _context.SaveChangesAsync();
             }
         }
     }

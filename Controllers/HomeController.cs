@@ -1,22 +1,34 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using JonyBalls3.Models;
+using JonyBalls3.Services;
+using System.Security.Claims;
 
 namespace JonyBalls3.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ContractorService _contractorService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(
+            ILogger<HomeController> logger,
+            ContractorService contractorService)
         {
             _logger = logger;
+            _contractorService = contractorService;
         }
 
-        // Перенаправляем с главной на страницу входа
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return RedirectToAction("Login", "Account");
+            if (User.Identity.IsAuthenticated)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var contractor = await _contractorService.GetContractorByUserIdAsync(userId);
+                ViewBag.IsContractor = contractor != null;
+            }
+            
+            return View();
         }
 
         public IActionResult Privacy()

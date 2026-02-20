@@ -1,4 +1,4 @@
-﻿@model IEnumerable<JonyBalls3.Models.SimpleProject>
+﻿@model IEnumerable<JonyBalls3.Models.Project>
 
 @{
     ViewData["Title"] = "Мои проекты";
@@ -6,7 +6,7 @@
 
 <div class="container py-4">
     <!-- Заголовок -->
-    <div class="d-flex justify-content-between align-items-center mb-5" data-aos="fade-up">
+    <div class="d-flex justify-content-between align-items-center mb-5">
         <div>
             <h1 class="display-5 fw-bold">
                 <i class="fas fa-project-diagram me-2" style="color: #667eea;"></i>
@@ -21,7 +21,7 @@
 
     @if (!Model.Any())
     {
-        <div class="text-center py-5" data-aos="fade-up">
+        <div class="text-center py-5">
             <div class="display-1 text-muted mb-4">
                 <i class="fas fa-folder-open"></i>
             </div>
@@ -37,12 +37,13 @@
         <div class="row g-4">
             @foreach (var item in Model)
             {
-                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="@(100 * Model.ToList().IndexOf(item))">
+                <div class="col-md-6 col-lg-4">
                     <div class="card-modern card">
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0 text-truncate">@item.Name</h5>
-                                <span class="badge @(item.Status == "Завершен" ? "badge-success" : item.Status == "Активный" ? "badge-info" : "badge-warning")">
+                                <span class="badge @(item.Status == JonyBalls3.Models.ProjectStatus.Completed ? "badge-success" : 
+                                    item.Status == JonyBalls3.Models.ProjectStatus.Active ? "badge-info" : "badge-warning")">
                                     @item.Status
                                 </span>
                             </div>
@@ -59,9 +60,16 @@
                                     <span><i class="fas fa-money-bill me-2 text-success"></i>Бюджет:</span>
                                     <span class="fw-bold">@item.Budget.ToString("N0") ₽</span>
                                 </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span><i class="fas fa-chart-line me-2 text-info"></i>Прогресс:</span>
+                                    <span class="fw-bold">@item.Progress%</span>
+                                </div>
+                                <div class="progress mb-2" style="height: 5px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: @item.Progress%;"></div>
+                                </div>
                                 <div class="d-flex justify-content-between">
-                                    <span><i class="fas fa-calendar me-2 text-info"></i>Создан:</span>
-                                    <span class="fw-bold">@item.CreatedDate.ToString("dd.MM.yyyy")</span>
+                                    <span><i class="fas fa-calendar me-2 text-warning"></i>Создан:</span>
+                                    <span class="fw-bold">@item.CreatedAt.ToString("dd.MM.yyyy")</span>
                                 </div>
                             </div>
                             
@@ -95,7 +103,7 @@
             <div class="col-md-3">
                 <div class="card-modern card text-center">
                     <div class="card-body">
-                        <h3 class="fw-bold text-success mb-2">@Model.Count(p => p.Status == "Завершен")</h3>
+                        <h3 class="fw-bold text-success mb-2">@Model.Count(p => p.Status == JonyBalls3.Models.ProjectStatus.Completed)</h3>
                         <span class="text-muted">Завершено</span>
                     </div>
                 </div>
@@ -103,7 +111,7 @@
             <div class="col-md-3">
                 <div class="card-modern card text-center">
                     <div class="card-body">
-                        <h3 class="fw-bold text-info mb-2">@Model.Count(p => p.Status == "Активный")</h3>
+                        <h3 class="fw-bold text-info mb-2">@Model.Count(p => p.Status == JonyBalls3.Models.ProjectStatus.Active)</h3>
                         <span class="text-muted">В работе</span>
                     </div>
                 </div>

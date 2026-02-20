@@ -1,42 +1,112 @@
-﻿using JonyBalls3.Models;
-using System.Linq;
+﻿using JonyBalls3.Data;
+using JonyBalls3.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace JonyBalls3.Services
 {
     public class ContractorService
     {
-        private readonly SimpleContractor[] _contractors;
+        private readonly ApplicationDbContext _context;
         
-        public ContractorService()
+        public ContractorService(ApplicationDbContext context)
         {
-            _contractors = SimpleContractor.GetSampleData();
+            _context = context;
+        }
+public async Task<List<PortfolioItem>> GetPortfolioAsync(int contractorId)
+{
+    return await _context.PortfolioItems
+        .Where(p => p.ContractorId == contractorId)
+        .OrderByDescending(p => p.UploadedAt)
+        .ToListAsync();
+}
+
+public async Task AddPortfolioItemAsync(PortfolioItem item)
+{
+    _context.PortfolioItems.Add(item);
+    await _context.SaveChangesAsync();
+}
+
+public async Task DeletePortfolioItemAsync(int id, int contractorId)
+{
+    var item = await _context.PortfolioItems
+        .FirstOrDefaultAsync(p => p.Id == id && p.ContractorId == contractorId);
+    
+    if (item != null)
+    {
+        // Удаляем файл
+        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", item.ImageUrl.TrimStart('/'));
+        if (System.IO.File.Exists(filePath))
+        {
+            System.IO.File.Delete(filePath);
         }
         
-        public SimpleContractor[] GetAllContractors()
+        _context.PortfolioItems.Remove(item);
+        await _context.SaveChangesAsync();
+    }
+}
+        
+        public async Task<List<ContractorProfile>> GetAllContractorsAsync()
         {
-            return _contractors.OrderByDescending(c => c.Rating).ToArray();
+            return await _context.ContractorProfiles
+                .Include(c => c.User)
+                .Include(c => c.Portfolio)
+                .Include(c => c.Reviews)
+                .OrderByDescending(c => c.Rating)
+                .ToListAsync();
         }
         
-        public SimpleContractor? GetContractorById(int id)
+        public async Task<ContractorProfile> GetContractorByIdAsync(int id)
         {
-            return _contractors.FirstOrDefault(c => c.Id == id);
+            return await _context.ContractorProfiles
+                .Include(c => c.User)
+                .Include(c => c.Portfolio)
+                .Include(c => c.Reviews)
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
         
-        public SimpleContractor[] SearchContractors(string specialization, decimal? maxPrice)
+      public async Task<ContractorProfile?> GetContractorByUserIdAsync(string userId)
+{
+    return await _context.ContractorProfiles
+        .Include(c => c.User)
+        .Include(c => c.Portfolio)
+        .Include(c => c.Projects)
+            .ThenInclude(p => p.User)
+        .FirstOrDefaultAsync(c => c.UserId == userId);
+}
+        
+        public async Task<ContractorProfile> CreateContractorProfileAsync(ContractorProfile profile)
         {
-            var query = _contractors.AsEnumerable();
+            profile.CreatedAt = DateTime.Now;
+            _context.ContractorProfiles.Add(profile);
+            await _context.SaveChangesAsync();
+            return profile;
+        }
+        
+        public async Task<ContractorProfile> UpdateContractorProfileAsync(ContractorProfile profile)
+        {
+            _context.Entry(profile).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return profile;
+        }
+        
+        public async Task<List<ContractorProfile>> SearchContractorsAsync(string specialization, decimal? maxRate)
+        {
+            var query = _context.ContractorProfiles
+                .Include(c => c.User)
+                .Include(c => c.Reviews)
+                .AsQueryable();
             
             if (!string.IsNullOrEmpty(specialization))
             {
                 query = query.Where(c => c.Specialization.Contains(specialization));
             }
             
-            if (maxPrice.HasValue)
+            if (maxRate.HasValue)
             {
-                query = query.Where(c => c.PricePerHour <= maxPrice.Value);
+                query = query.Where(c => c.HourlyRate <= maxRate.Value);
             }
             
-            return query.ToArray();
+            return await query.OrderByDescending(c => c.Rating).ToListAsync();
         }
     }
 }

@@ -261,6 +261,10 @@
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
     },
     {
+      "Id": "\\\\mcb.local\\RoamingProfiles$\\StudentsData\\1238006\\Desktop\\проект УП\\JonyBalls3\\JonyBalls3\\JonyBalls3\\wwwroot\\uploads\\portfolio\\57904746-88df-4ff8-a7cb-fc47d9679224.jpg",
+      "PackagePath": "staticwebassets\\uploads\\portfolio\\57904746-88df-4ff8-a7cb-fc47d9679224.jpg"
+    },
+    {
       "Id": "\\\\mcb.local\\RoamingProfiles$\\StudentsData\\1238006\\Desktop\\проект УП\\JonyBalls3\\JonyBalls3\\JonyBalls3\\wwwroot\\videos\\privacy.mp4",
       "PackagePath": "staticwebassets\\videos\\privacy.mp4"
     },

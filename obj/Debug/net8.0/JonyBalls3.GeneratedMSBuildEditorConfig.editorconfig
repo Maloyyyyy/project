@@ -18,8 +18,16 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = \\mcb.local\RoamingProfiles$\StudentsData\1238006\Desktop\проект УП\JonyBalls3\JonyBalls3\JonyBalls3
 build_property._RazorSourceGeneratorDebug = 
 
+[//mcb.local/RoamingProfiles$/StudentsData/1238006/Desktop/проект УП/JonyBalls3/JonyBalls3/JonyBalls3/Views/Account/BecomeContractor.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxCZWNvbWVDb250cmFjdG9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [//mcb.local/RoamingProfiles$/StudentsData/1238006/Desktop/проект УП/JonyBalls3/JonyBalls3/JonyBalls3/Views/Account/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[//mcb.local/RoamingProfiles$/StudentsData/1238006/Desktop/проект УП/JonyBalls3/JonyBalls3/JonyBalls3/Views/Account/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [//mcb.local/RoamingProfiles$/StudentsData/1238006/Desktop/проект УП/JonyBalls3/JonyBalls3/JonyBalls3/Views/Calculator/Index.cshtml]
@@ -34,8 +42,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udHJhY3RvcnNcRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[//mcb.local/RoamingProfiles$/StudentsData/1238006/Desktop/проект УП/JonyBalls3/JonyBalls3/JonyBalls3/Views/Contractors/EditProfile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udHJhY3RvcnNcRWRpdFByb2ZpbGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [//mcb.local/RoamingProfiles$/StudentsData/1238006/Desktop/проект УП/JonyBalls3/JonyBalls3/JonyBalls3/Views/Contractors/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udHJhY3RvcnNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[//mcb.local/RoamingProfiles$/StudentsData/1238006/Desktop/проект УП/JonyBalls3/JonyBalls3/JonyBalls3/Views/Contractors/ManagePortfolio.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udHJhY3RvcnNcTWFuYWdlUG9ydGZvbGlvLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[//mcb.local/RoamingProfiles$/StudentsData/1238006/Desktop/проект УП/JonyBalls3/JonyBalls3/JonyBalls3/Views/Contractors/MyProfile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udHJhY3RvcnNcTXlQcm9maWxlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [//mcb.local/RoamingProfiles$/StudentsData/1238006/Desktop/проект УП/JonyBalls3/JonyBalls3/JonyBalls3/Views/Home/Index.cshtml]
@@ -62,12 +82,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvamVjdHNcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[//mcb.local/RoamingProfiles$/StudentsData/1238006/Desktop/проект УП/JonyBalls3/JonyBalls3/JonyBalls3/Views/Projects/FindContractor.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvamVjdHNcRmluZENvbnRyYWN0b3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [//mcb.local/RoamingProfiles$/StudentsData/1238006/Desktop/проект УП/JonyBalls3/JonyBalls3/JonyBalls3/Views/Projects/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvamVjdHNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [//mcb.local/RoamingProfiles$/StudentsData/1238006/Desktop/проект УП/JonyBalls3/JonyBalls3/JonyBalls3/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[//mcb.local/RoamingProfiles$/StudentsData/1238006/Desktop/проект УП/JonyBalls3/JonyBalls3/JonyBalls3/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [//mcb.local/RoamingProfiles$/StudentsData/1238006/Desktop/проект УП/JonyBalls3/JonyBalls3/JonyBalls3/Views/_ViewImports.cshtml]
