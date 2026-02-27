@@ -14,7 +14,13 @@ namespace JonyBalls3.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? LastLoginAt { get; set; }
         
-        // Навигационные свойства (делаем nullable)
+        // НОВЫЕ ПОЛЯ ДЛЯ ПРОФИЛЯ
+        public string? AboutMe { get; set; }
+        public string? City { get; set; }
+        public DateTime? BirthDate { get; set; }
+        public string? PhoneNumberPublic { get; set; }
+        
+        // Навигационные свойства
         public virtual ContractorProfile? ContractorProfile { get; set; }
         public virtual ICollection<Project>? Projects { get; set; }
         public virtual ICollection<ChatMessage>? SentMessages { get; set; }

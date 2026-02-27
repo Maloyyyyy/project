@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "fP0Kk9cEqPI=",
+  "dgSpecHash": "4wWJeQkl6pE=",
   "success": true,
-  "projectFilePath": "\\\\mcb.local\\RoamingProfiles$\\StudentsData\\1238006\\Desktop\\проект УП\\JonyBalls3\\JonyBalls3\\JonyBalls3\\JonyBalls3.csproj",
+  "projectFilePath": "\\\\mcb.local\\RoamingProfiles$\\StudentsData\\1238006\\Desktop\\проект УП\\JonyBalls3\\project\\JonyBalls3.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\1238006\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\1238006\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\8.0.0\\microsoft.aspnetcore.cryptography.internal.8.0.0.nupkg.sha512",

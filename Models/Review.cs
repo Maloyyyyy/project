@@ -12,18 +12,18 @@ namespace JonyBalls3.Models
         public int ContractorId { get; set; }
         
         [ForeignKey("ContractorId")]
-        public virtual ContractorProfile Contractor { get; set; }
+        public virtual ContractorProfile? Contractor { get; set; }
         
         [Required]
-        public string UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         
         [ForeignKey("UserId")]
-        public virtual User User { get; set; }
+        public virtual User? User { get; set; }
         
         public int? ProjectId { get; set; }
         
         [ForeignKey("ProjectId")]
-        public virtual Project Project { get; set; }
+        public virtual Project? Project { get; set; }
         
         [Required]
         [Range(1, 5)]
@@ -31,8 +31,13 @@ namespace JonyBalls3.Models
         
         [Required]
         [StringLength(1000)]
-        public string Comment { get; set; } = "";
+        public string Comment { get; set; } = string.Empty;
         
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        
+        // НОВОЕ ПОЛЕ
+        public bool IsRecommended { get; set; } = true;
+        
+        public DateTime? CompletedDate { get; set; }
     }
 }

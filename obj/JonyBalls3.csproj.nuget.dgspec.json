@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "\\\\mcb.local\\RoamingProfiles$\\StudentsData\\1238006\\Desktop\\проект УП\\JonyBalls3\\JonyBalls3\\JonyBalls3\\JonyBalls3.csproj": {}
+    "\\\\mcb.local\\RoamingProfiles$\\StudentsData\\1238006\\Desktop\\проект УП\\JonyBalls3\\project\\JonyBalls3.csproj": {}
   },
   "projects": {
-    "\\\\mcb.local\\RoamingProfiles$\\StudentsData\\1238006\\Desktop\\проект УП\\JonyBalls3\\JonyBalls3\\JonyBalls3\\JonyBalls3.csproj": {
+    "\\\\mcb.local\\RoamingProfiles$\\StudentsData\\1238006\\Desktop\\проект УП\\JonyBalls3\\project\\JonyBalls3.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "\\\\mcb.local\\RoamingProfiles$\\StudentsData\\1238006\\Desktop\\проект УП\\JonyBalls3\\JonyBalls3\\JonyBalls3\\JonyBalls3.csproj",
+        "projectUniqueName": "\\\\mcb.local\\RoamingProfiles$\\StudentsData\\1238006\\Desktop\\проект УП\\JonyBalls3\\project\\JonyBalls3.csproj",
         "projectName": "JonyBalls3",
-        "projectPath": "\\\\mcb.local\\RoamingProfiles$\\StudentsData\\1238006\\Desktop\\проект УП\\JonyBalls3\\JonyBalls3\\JonyBalls3\\JonyBalls3.csproj",
+        "projectPath": "\\\\mcb.local\\RoamingProfiles$\\StudentsData\\1238006\\Desktop\\проект УП\\JonyBalls3\\project\\JonyBalls3.csproj",
         "packagesPath": "C:\\Users\\1238006\\.nuget\\packages\\",
-        "outputPath": "\\\\mcb.local\\RoamingProfiles$\\StudentsData\\1238006\\Desktop\\проект УП\\JonyBalls3\\JonyBalls3\\JonyBalls3\\obj\\",
+        "outputPath": "\\\\mcb.local\\RoamingProfiles$\\StudentsData\\1238006\\Desktop\\проект УП\\JonyBalls3\\project\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "\\\\mcb.local\\RoamingProfiles$\\StudentsData\\1238006\\AppData\\Roaming\\NuGet\\NuGet.Config",

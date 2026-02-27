@@ -1,141 +1,135 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using JonyBalls3.Services;
-using System.Security.Claims;
 using JonyBalls3.Models;
+using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
+using JonyBalls3.Data;
 
 namespace JonyBalls3.Controllers
 {
     [Authorize]
     public class ChatController : Controller
     {
-        private readonly ChatService _chatService;
-        private readonly ProjectService _projectService;
+        private readonly ApplicationDbContext _context;
         private readonly ILogger<ChatController> _logger;
 
-        public ChatController(
-            ChatService chatService,
-            ProjectService projectService,
-            ILogger<ChatController> logger)
+        public ChatController(ApplicationDbContext context, ILogger<ChatController> logger)
         {
-            _chatService = chatService;
-            _projectService = projectService;
+            _context = context;
             _logger = logger;
         }
 
-        // GET: Chat
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var chats = await _chatService.GetUserChatsAsync(userId);
             
-            var unreadCounts = new Dictionary<int, int>();
-            foreach (var chat in chats)
+            var projects = await _context.Projects
+                .Include(p => p.User)
+                .Include(p => p.Contractor).ThenInclude(c => c.User)
+                .Include(p => p.ChatMessages)
+                .Where(p => p.UserId == userId || (p.Contractor != null && p.Contractor.UserId == userId))
+                .OrderByDescending(p => p.ChatMessages.Any() ? p.ChatMessages.Max(m => m.SentAt) : p.CreatedAt)
+                .ToListAsync();
+
+            var chatRooms = new List<ChatRoomViewModel>();
+
+            foreach (var project in projects)
             {
-                unreadCounts[chat.Id] = await _chatService.GetUnreadCountForProjectAsync(userId, chat.Id);
+                User? otherUser = project.UserId == userId ? project.Contractor?.User : project.User;
+                if (otherUser == null) continue;
+
+                var lastMessage = project.ChatMessages.OrderByDescending(m => m.SentAt).FirstOrDefault();
+                var unreadCount = project.ChatMessages.Count(m => m.ReceiverId == userId && !m.IsRead);
+
+                chatRooms.Add(new ChatRoomViewModel
+                {
+                    ProjectId = project.Id,
+                    ProjectName = project.Name,
+                    OtherUserId = otherUser.Id,
+                    OtherUserName = otherUser.FullName,
+                    OtherUserAvatar = otherUser.AvatarUrl ?? "",
+                    LastMessage = lastMessage?.Message ?? "Нет сообщений",
+                    LastMessageTime = lastMessage?.SentAt ?? project.CreatedAt,
+                    UnreadCount = unreadCount,
+                    IsContractor = project.UserId != userId
+                });
             }
-            
-            ViewBag.UnreadCounts = unreadCounts;
-            return View(chats);
+
+            return View(chatRooms);
         }
 
-        // GET: Chat/Project/5
-        public async Task<IActionResult> Project(int id)
+        public async Task<IActionResult> Room(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var project = await _projectService.GetProjectByIdAsync(id);
             
-            if (project == null)
-            {
-                return NotFound();
-            }
+            var project = await _context.Projects
+                .Include(p => p.User)
+                .Include(p => p.Contractor).ThenInclude(c => c.User)
+                .Include(p => p.ChatMessages).ThenInclude(m => m.Sender)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
-            // Проверяем доступ пользователя к чату
-            if (project.UserId != userId && (project.Contractor == null || project.Contractor.UserId != userId))
-            {
-                return Forbid();
-            }
+            if (project == null) return NotFound();
+            if (project.UserId != userId && (project.Contractor == null || project.Contractor.UserId != userId)) return Forbid();
 
-            var messages = await _chatService.GetMessagesAsync(id);
-            await _chatService.MarkAllAsReadAsync(id, userId);
-            
+            var otherUser = project.UserId == userId ? project.Contractor?.User : project.User;
+            if (otherUser == null) return NotFound();
+
+            var unreadMessages = project.ChatMessages.Where(m => m.ReceiverId == userId && !m.IsRead).ToList();
+            foreach (var msg in unreadMessages) msg.ReadAt = DateTime.Now;
+            await _context.SaveChangesAsync();
+
+            var messages = project.ChatMessages.OrderBy(m => m.SentAt)
+                .Select(m => new ChatMessageViewModel
+                {
+                    Id = m.Id,
+                    ProjectId = project.Id,
+                    ProjectName = project.Name,
+                    SenderId = m.SenderId,
+                    SenderName = m.Sender?.FullName ?? "Пользователь",
+                    SenderAvatar = m.Sender?.AvatarUrl ?? "",
+                    Message = m.Message,
+                    SentAt = m.SentAt,
+                    IsRead = m.IsRead,
+                    IsMine = m.SenderId == userId
+                }).ToList();
+
             ViewBag.Project = project;
+            ViewBag.OtherUser = otherUser;
+
             return View(messages);
         }
 
-        // POST: Chat/SendMessage
         [HttpPost]
-        public async Task<IActionResult> SendMessage([FromBody] SendMessageModel model)
+        public async Task<IActionResult> Send([FromBody] SendMessageModel model)
         {
             try
             {
                 var senderId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var project = await _projectService.GetProjectByIdAsync(model.ProjectId);
-                
-                if (project == null)
+                var project = await _context.Projects.Include(p => p.Contractor).FirstOrDefaultAsync(p => p.Id == model.ProjectId);
+                if (project == null) return Json(new { success = false, message = "Проект не найден" });
+
+                string receiverId = project.UserId == senderId ? project.Contractor?.UserId : project.UserId;
+                if (string.IsNullOrEmpty(receiverId)) return Json(new { success = false, message = "Получатель не найден" });
+
+                var message = new ChatMessage
                 {
-                    return NotFound(new { success = false, message = "Проект не найден" });
-                }
+                    ProjectId = model.ProjectId,
+                    SenderId = senderId,
+                    ReceiverId = receiverId,
+                    Message = model.Message,
+                    SentAt = DateTime.Now
+                };
 
-                // Определяем получателя
-                string receiverId = project.UserId == senderId 
-                    ? project.Contractor?.UserId 
-                    : project.UserId;
+                _context.ChatMessages.Add(message);
+                await _context.SaveChangesAsync();
 
-                if (string.IsNullOrEmpty(receiverId))
-                {
-                    return BadRequest(new { success = false, message = "Получатель не найден" });
-                }
-
-                var message = await _chatService.SendMessageAsync(
-                    senderId, 
-                    receiverId, 
-                    model.ProjectId, 
-                    model.Message,
-                    model.AttachmentUrl);
-
-                return Ok(new { 
-                    success = true, 
-                    message = new {
-                        id = message.Id,
-                        text = message.Message,
-                        senderId = message.SenderId,
-                        sentAt = message.SentAt,
-                        isRead = message.IsRead
-                    }
-                });
+                return Json(new { success = true, message = new { id = message.Id, text = message.Message, senderId = message.SenderId, sentAt = message.SentAt } });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Ошибка при отправке сообщения");
-                return StatusCode(500, new { success = false, message = "Ошибка сервера" });
+                return Json(new { success = false, message = "Ошибка сервера" });
             }
-        }
-
-        // GET: Chat/GetMessages
-        [HttpGet]
-        public async Task<IActionResult> GetMessages(int projectId, int lastMessageId = 0)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var messages = await _chatService.GetMessagesAsync(projectId, lastMessageId);
-            
-            return Ok(messages.Select(m => new {
-                m.Id,
-                m.Message,
-                m.SenderId,
-                m.SentAt,
-                m.IsRead,
-                IsMine = m.SenderId == userId
-            }));
-        }
-
-        // POST: Chat/MarkAsRead
-        [HttpPost]
-        public async Task<IActionResult> MarkAsRead([FromBody] MarkAsReadModel model)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _chatService.MarkMessagesAsReadAsync(model.MessageIds, userId);
-            return Ok(new { success = true });
         }
     }
 
@@ -143,11 +137,32 @@ namespace JonyBalls3.Controllers
     {
         public int ProjectId { get; set; }
         public string Message { get; set; } = "";
-        public string? AttachmentUrl { get; set; }
     }
 
-    public class MarkAsReadModel
+    public class ChatMessageViewModel
     {
-        public List<int> MessageIds { get; set; } = new();
+        public int Id { get; set; }
+        public int ProjectId { get; set; }
+        public string ProjectName { get; set; } = "";
+        public string SenderId { get; set; } = "";
+        public string SenderName { get; set; } = "";
+        public string SenderAvatar { get; set; } = "";
+        public string Message { get; set; } = "";
+        public DateTime SentAt { get; set; }
+        public bool IsRead { get; set; }
+        public bool IsMine { get; set; }
+    }
+
+    public class ChatRoomViewModel
+    {
+        public int ProjectId { get; set; }
+        public string ProjectName { get; set; } = "";
+        public string OtherUserId { get; set; } = "";
+        public string OtherUserName { get; set; } = "";
+        public string OtherUserAvatar { get; set; } = "";
+        public string LastMessage { get; set; } = "";
+        public DateTime LastMessageTime { get; set; }
+        public int UnreadCount { get; set; }
+        public bool IsContractor { get; set; }
     }
 }
