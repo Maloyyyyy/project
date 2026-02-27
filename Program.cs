@@ -64,6 +64,14 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+
+// В методе Main или после builder.Build():
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    context.Database.EnsureCreated(); // Создаст базу если её нет
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
